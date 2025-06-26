@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
 
     // Calculate net pay
     const salaryAmount = salary?.amount || 0
-    const totalDeductions = deductions.reduce((sum, d) => sum + d.amount, 0)
+    const totalDeductions = deductions.reduce((sum: number, d: { amount: number }) => sum + d.amount, 0)
     const netPay = salaryAmount - totalDeductions
 
     // Generate CSV content
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
       [''],
       ['Deductions'],
       ['Date', 'Purpose', 'Amount'],
-      ...deductions.map(d => [
+      ...deductions.map((d: { date: Date; purpose: string; amount: number }) => [
         format(new Date(d.date), 'MM/dd/yyyy'),
         d.purpose,
         `₱${d.amount.toFixed(2)}`
