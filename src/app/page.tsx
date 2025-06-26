@@ -38,10 +38,14 @@ export default function Home() {
   const fetchHelpers = async () => {
     try {
       const response = await fetch('/api/helpers')
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
       const data = await response.json()
-      setHelpers(data)
+      setHelpers(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error('Error fetching helpers:', error)
+      setHelpers([]) // Set empty array on error
     } finally {
       setLoading(false)
     }
