@@ -4,6 +4,7 @@ const AUTH_COOKIE = 'salary_auth'
 const PUBLIC_PATHS = ['/login', '/api/login']
 
 export function middleware(request: NextRequest) {
+  console.log('MIDDLEWARE RUNNING:', request.nextUrl.pathname)
   const { pathname } = request.nextUrl
   if (PUBLIC_PATHS.some(path => pathname.startsWith(path))) {
     return NextResponse.next()
