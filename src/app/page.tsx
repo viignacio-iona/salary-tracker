@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 import HelperCard from '@/components/HelperCard'
 import AddHelperModal from '@/components/AddHelperModal'
@@ -8,6 +9,7 @@ import MonthSelector from '@/components/MonthSelector'
 import { Box, Container, Typography, Button, CircularProgress } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined'
+import LogoutIcon from '@mui/icons-material/Logout'
 import Grid from '@mui/material/Grid'
 
 interface Helper {
@@ -34,6 +36,7 @@ export default function Home() {
   const [selectedMonth, setSelectedMonth] = useState(format(new Date(), 'yyyy-MM'))
   const [showAddHelper, setShowAddHelper] = useState(false)
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   const fetchHelpers = async () => {
     try {
@@ -76,6 +79,11 @@ export default function Home() {
     setSelectedMonth(month)
   }
 
+  const handleLogout = async () => {
+    await fetch('/api/logout', { method: 'POST' })
+    router.push('/login')
+  }
+
   if (loading) {
     return (
       <Box minHeight="100vh" display="flex" alignItems="center" justifyContent="center" bgcolor="#f5f5f5">
@@ -92,9 +100,19 @@ export default function Home() {
       <Container maxWidth="md" sx={{ py: 6 }}>
         {/* Header */}
         <Box mb={5}>
-          <Typography variant="h4" fontWeight={700} color="text.primary" gutterBottom>
-            Claver Helpers&apos; Salary Tracker
-          </Typography>
+          <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
+            <Typography variant="h4" fontWeight={700} color="text.primary" gutterBottom>
+              Claver Helpers&apos; Salary Tracker
+            </Typography>
+            <Button
+              variant="outlined"
+              startIcon={<LogoutIcon />}
+              onClick={handleLogout}
+              sx={{ minWidth: 100 }}
+            >
+              Logout
+            </Button>
+          </Box>
           <Typography color="text.secondary">
             Manage monthly salaries and deductions for your household helpers
           </Typography>
