@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { cookies } from 'next/headers'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const cookieStore = await cookies();
+  const cookie = cookieStore.get('salary_auth');
+  if (!cookie || cookie.value !== 'authenticated') {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
   try {
     const helpers = await prisma.helper.findMany({
       include: {
@@ -23,6 +29,11 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const cookieStore = await cookies();
+  const cookie = cookieStore.get('salary_auth');
+  if (!cookie || cookie.value !== 'authenticated') {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
   try {
     const { name } = await request.json()
     

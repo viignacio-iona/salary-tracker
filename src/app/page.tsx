@@ -37,6 +37,7 @@ export default function Home() {
   const [showAddHelper, setShowAddHelper] = useState(false)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
+  const [authChecked, setAuthChecked] = useState(false)
 
   const fetchHelpers = async () => {
     try {
@@ -55,8 +56,24 @@ export default function Home() {
   }
 
   useEffect(() => {
-    fetchHelpers()
-  }, [])
+    // Check for the salary_auth cookie
+    const isAuthenticated = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('salary_auth='))
+      ?.split('=')[1] === 'authenticated';
+
+    if (!isAuthenticated) {
+      router.replace('/login');
+    } else {
+      setAuthChecked(true);
+    }
+  }, [router]);
+
+  useEffect(() => {
+    if (authChecked) {
+      fetchHelpers();
+    }
+  }, [authChecked]);
 
   const handleAddHelper = async (name: string) => {
     try {
@@ -82,6 +99,10 @@ export default function Home() {
   const handleLogout = async () => {
     await fetch('/api/logout', { method: 'POST' })
     router.push('/login')
+  }
+
+  if (!authChecked) {
+    return null; // or a loading spinner
   }
 
   if (loading) {
