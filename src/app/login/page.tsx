@@ -10,12 +10,17 @@ import {
   Alert,
   Paper,
   DialogTitle,
+  InputAdornment,
+  IconButton,
 } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
@@ -37,6 +42,9 @@ export default function LoginPage() {
     }
   }
 
+  const handleClickShowPassword = () => setShowPassword((show) => !show)
+  const handleMouseDownPassword = (e: React.MouseEvent) => e.preventDefault()
+
   return (
     <Container maxWidth="sm" sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <Paper elevation={6} sx={{ p: 4, width: '100%' }}>
@@ -54,13 +62,27 @@ export default function LoginPage() {
           <TextField
             autoFocus
             fullWidth
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             label="Password"
             value={password}
             onChange={e => setPassword(e.target.value)}
             error={!!error}
             variant="outlined"
             sx={{ mb: 3 }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
           <Button type="submit" variant="contained" fullWidth size="large" disabled={loading}>
             Access Salary Tracker

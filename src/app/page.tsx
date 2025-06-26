@@ -36,13 +36,17 @@ export default function Home() {
   const [selectedMonth, setSelectedMonth] = useState(format(new Date(), 'yyyy-MM'))
   const [showAddHelper, setShowAddHelper] = useState(false)
   const [loading, setLoading] = useState(true)
-  const router = useRouter()
   const [authChecked, setAuthChecked] = useState(false)
+  const router = useRouter()
 
   const fetchHelpers = async () => {
     try {
       const response = await fetch('/api/helpers')
       if (!response.ok) {
+        if (response.status === 401) {
+          router.replace('/login')
+          return
+        }
         throw new Error(`HTTP error! status: ${response.status}`)
       }
       const data = await response.json()
@@ -56,24 +60,24 @@ export default function Home() {
   }
 
   useEffect(() => {
-    // Check for the salary_auth cookie
-    const isAuthenticated = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('salary_auth='))
-      ?.split('=')[1] === 'authenticated';
-
-    if (!isAuthenticated) {
-      router.replace('/login');
-    } else {
-      setAuthChecked(true);
+    // Check authentication by making a request to a protected endpoint
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/helpers')
+        if (response.status === 401) {
+          router.replace('/login')
+          return
+        }
+        setAuthChecked(true)
+        fetchHelpers()
+      } catch (error) {
+        console.error('Auth check failed:', error)
+        router.replace('/login')
+      }
     }
-  }, [router]);
 
-  useEffect(() => {
-    if (authChecked) {
-      fetchHelpers();
-    }
-  }, [authChecked]);
+    checkAuth()
+  }, [router])
 
   const handleAddHelper = async (name: string) => {
     try {
@@ -102,7 +106,14 @@ export default function Home() {
   }
 
   if (!authChecked) {
-    return null; // or a loading spinner
+    return (
+      <Box minHeight="100vh" display="flex" alignItems="center" justifyContent="center" bgcolor="#f5f5f5">
+        <Box textAlign="center">
+          <CircularProgress color="primary" />
+          <Typography mt={2} color="text.secondary">Checking authentication...</Typography>
+        </Box>
+      </Box>
+    )
   }
 
   if (loading) {
