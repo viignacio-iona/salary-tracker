@@ -5,9 +5,10 @@ import { format } from 'date-fns'
 import HelperCard from '@/components/HelperCard'
 import AddHelperModal from '@/components/AddHelperModal'
 import MonthSelector from '@/components/MonthSelector'
-import { Box, Container, Typography, Button, Grid, CircularProgress } from '@mui/material'
+import { Box, Container, Typography, Button, CircularProgress } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined'
+import Grid from '@mui/material/Grid'
 
 interface Helper {
   id: string
