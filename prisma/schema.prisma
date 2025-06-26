@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Helper {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  salaries   Salary[]
+  deductions Deduction[]
+
+  @@map("helpers")
+}
+
+model Salary {
+  id        String   @id @default(cuid())
+  amount    Float
+  month     String   // Format: "YYYY-MM" (e.g., "2024-01")
+  year      Int
+  helperId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  helper Helper @relation(fields: [helperId], references: [id], onDelete: Cascade)
+
+  @@unique([helperId, month, year])
+  @@map("salaries")
+}
+
+model Deduction {
+  id          String   @id @default(cuid())
+  purpose     String
+  amount      Float
+  date        DateTime
+  month       String   // Format: "YYYY-MM" (e.g., "2024-01")
+  year        Int
+  helperId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  helper Helper @relation(fields: [helperId], references: [id], onDelete: Cascade)
+
+  @@map("deductions")
+}
