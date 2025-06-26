@@ -89,7 +89,7 @@ export default function Home() {
         {/* Header */}
         <Box mb={5}>
           <Typography variant="h4" fontWeight={700} color="text.primary" gutterBottom>
-            Claver Helpers' Salary Tracker
+            Claver Helpers&apos; Salary Tracker
           </Typography>
           <Typography color="text.secondary">
             Manage monthly salaries and deductions for your household helpers

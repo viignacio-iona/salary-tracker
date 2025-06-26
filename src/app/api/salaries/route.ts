@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const month = searchParams.get('month')
     const year = searchParams.get('year')
 
-    const where: Record<string, any> = {}
+    const where: Record<string, unknown> = {}
     
     if (helperId) where.helperId = helperId
     if (month) where.month = month

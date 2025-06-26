@@ -1,0 +1,15 @@
+# Generated files
+src/generated/
+node_modules/
+.next/
+dist/
+build/
+
+# Prisma generated files
+prisma/migrations/
+*.db
+*.db-journal
+
+# Build artifacts
+out/
+.vercel/ 
