@@ -13,6 +13,7 @@ export async function GET(request: NextRequest) {
       include: {
         salaries: true,
         deductions: true,
+        bonuses: true,
       },
       orderBy: {
         name: 'asc',

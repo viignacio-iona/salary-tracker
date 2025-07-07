@@ -5,13 +5,13 @@ import { format } from 'date-fns'
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, IconButton, Stack } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 
-interface AddDeductionModalProps {
+interface AddBonusModalProps {
   isOpen: boolean
   onClose: () => void
   onAdd: (purpose: string, amount: number, date: string) => void
 }
 
-export default function AddDeductionModal({ isOpen, onClose, onAdd }: AddDeductionModalProps) {
+export default function AddBonusModal({ isOpen, onClose, onAdd }: AddBonusModalProps) {
   const [purpose, setPurpose] = useState('')
   const [amount, setAmount] = useState('')
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'))
@@ -50,7 +50,7 @@ export default function AddDeductionModal({ isOpen, onClose, onAdd }: AddDeducti
           py: { xs: 2, sm: 2.5 }
         }}
       >
-        <span style={{ fontSize: '1.125rem', fontWeight: 600 }}>Add Deduction</span>
+        <span style={{ fontSize: '1.125rem', fontWeight: 600 }}>Add Bonus</span>
         <IconButton onClick={onClose} size="small">
           <CloseIcon />
         </IconButton>
@@ -69,7 +69,7 @@ export default function AddDeductionModal({ isOpen, onClose, onAdd }: AddDeducti
               label="Purpose"
               value={purpose}
               onChange={(e) => setPurpose(e.target.value)}
-              placeholder="e.g., Cash advance, Loan payment"
+              placeholder="e.g., Performance bonus, Holiday bonus, Overtime pay"
               fullWidth
               required
               margin="dense"
@@ -123,13 +123,13 @@ export default function AddDeductionModal({ isOpen, onClose, onAdd }: AddDeducti
           <Button 
             type="submit" 
             variant="contained" 
-            color="error"
+            color="success"
             sx={{ 
               flex: { xs: 1, sm: 'auto' },
               py: { xs: 1.5, sm: 1 }
             }}
           >
-            Add Deduction
+            Add Bonus
           </Button>
         </DialogActions>
       </form>

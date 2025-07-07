@@ -49,10 +49,21 @@ export async function GET(request: NextRequest) {
       orderBy: { date: 'asc' },
     })
 
+    // Get bonuses for the month
+    const bonuses = await prisma.bonus.findMany({
+      where: {
+        helperId,
+        month,
+        year: parseInt(year),
+      },
+      orderBy: { date: 'asc' },
+    })
+
     // Calculate net pay
     const salaryAmount = salary?.amount || 0
     const totalDeductions = deductions.reduce((sum: number, d: { amount: number }) => sum + d.amount, 0)
-    const netPay = salaryAmount - totalDeductions
+    const totalBonuses = bonuses.reduce((sum: number, b: { amount: number }) => sum + b.amount, 0)
+    const netPay = salaryAmount + totalBonuses - totalDeductions
 
     // Generate CSV content
     const csvContent = [
@@ -60,6 +71,16 @@ export async function GET(request: NextRequest) {
       ['Month/Year', `${month}/${year}`],
       [''],
       ['Salary', `₱${salaryAmount.toFixed(2)}`],
+      [''],
+      ['Bonuses'],
+      ['Date', 'Purpose', 'Amount'],
+      ...bonuses.map((b: { date: Date; purpose: string; amount: number }) => [
+        format(new Date(b.date), 'MM/dd/yyyy'),
+        b.purpose,
+        `₱${b.amount.toFixed(2)}`
+      ]),
+      [''],
+      ['Total Bonuses', `₱${totalBonuses.toFixed(2)}`],
       [''],
       ['Deductions'],
       ['Date', 'Purpose', 'Amount'],

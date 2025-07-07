@@ -21,15 +21,42 @@ export default function AddHelperModal({ isOpen, onClose, onAdd }: AddHelperModa
   }
 
   return (
-    <Dialog open={isOpen} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 1 }}>
-        Add Helper
+    <Dialog 
+      open={isOpen} 
+      onClose={onClose} 
+      maxWidth="xs" 
+      fullWidth
+      PaperProps={{
+        sx: {
+          mx: { xs: 2, sm: 'auto' },
+          width: { xs: 'calc(100% - 32px)', sm: 'auto' }
+        }
+      }}
+    >
+      <DialogTitle 
+        sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between', 
+          pr: { xs: 1, sm: 1 },
+          px: { xs: 2, sm: 3 },
+          py: { xs: 2, sm: 2.5 }
+        }}
+      >
+        <span style={{ fontSize: '1.125rem', fontWeight: 600 }}>Add Helper</span>
         <IconButton onClick={onClose} size="small">
           <CloseIcon />
         </IconButton>
       </DialogTitle>
       <form onSubmit={handleSubmit}>
-        <DialogContent dividers>
+        <DialogContent 
+          dividers 
+          sx={{ 
+            px: { xs: 2, sm: 3 }, 
+            pt: { xs: 2, sm: 3 }, 
+            pb: { xs: 1.5, sm: 2 } 
+          }}
+        >
           <TextField
             label="Helper Name"
             value={name}
@@ -39,11 +66,38 @@ export default function AddHelperModal({ isOpen, onClose, onAdd }: AddHelperModa
             required
             autoFocus
             margin="dense"
+            size="small"
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose} color="inherit" variant="outlined">Cancel</Button>
-          <Button type="submit" variant="contained">Add Helper</Button>
+        <DialogActions 
+          sx={{ 
+            px: { xs: 2, sm: 3 }, 
+            pb: { xs: 2, sm: 3 }, 
+            pt: { xs: 1.5, sm: 2 },
+            gap: { xs: 1, sm: 1 }
+          }}
+        >
+          <Button 
+            onClick={onClose} 
+            color="inherit" 
+            variant="outlined"
+            sx={{ 
+              flex: { xs: 1, sm: 'auto' },
+              py: { xs: 1.5, sm: 1 }
+            }}
+          >
+            Cancel
+          </Button>
+          <Button 
+            type="submit" 
+            variant="contained"
+            sx={{ 
+              flex: { xs: 1, sm: 'auto' },
+              py: { xs: 1.5, sm: 1 }
+            }}
+          >
+            Add Helper
+          </Button>
         </DialogActions>
       </form>
     </Dialog>
