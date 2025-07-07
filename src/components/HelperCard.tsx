@@ -430,12 +430,12 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
                   <ListItem sx={{ pl: 0, pr: 0 }} disableGutters>
                     <Box
                       display="flex"
-                      flexDirection={{ xs: 'row', sm: 'row' }}
-                      alignItems={{ xs: 'flex-start', sm: 'center' }}
+                      flexDirection="row"
+                      alignItems="flex-start"
                       width="100%"
                       gap={1}
                     >
-                      {/* Amount+Icon and Date (column on xs, row on sm) */}
+                      {/* Amount+Icon and Date (always column) */}
                       <Box
                         display="flex"
                         flexDirection="column"
@@ -456,7 +456,7 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
                         <Typography
                           variant="body2"
                           color="text.secondary"
-                          sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, mt: 0.5, display: { xs: 'block', sm: 'none' } }}
+                          sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, mt: 0.5 }}
                         >
                           {format(new Date(deduction.date), 'MMM dd, yyyy')}
                         </Typography>
@@ -469,14 +469,6 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
                           sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
                         />
                       </Box>
-                      {/* Date (inline on desktop) */}
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, ml: { xs: 0, sm: 1 }, display: { xs: 'none', sm: 'block' } }}
-                      >
-                        {format(new Date(deduction.date), 'MMM dd, yyyy')}
-                      </Typography>
                       {/* Delete Icon (right) */}
                       <Box display="flex" alignItems="center" justifyContent="flex-end">
                         <IconButton
@@ -570,12 +562,12 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
                   <ListItem sx={{ pl: 0, pr: 0 }} disableGutters>
                     <Box
                       display="flex"
-                      flexDirection={{ xs: 'row', sm: 'row' }}
-                      alignItems={{ xs: 'flex-start', sm: 'center' }}
+                      flexDirection="row"
+                      alignItems="flex-start"
                       width="100%"
                       gap={1}
                     >
-                      {/* Amount+Icon and Date (column on xs, row on sm) */}
+                      {/* Amount+Icon and Date (always column) */}
                       <Box
                         display="flex"
                         flexDirection="column"
@@ -596,7 +588,7 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
                         <Typography
                           variant="body2"
                           color="text.secondary"
-                          sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, mt: 0.5, display: { xs: 'block', sm: 'none' } }}
+                          sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, mt: 0.5 }}
                         >
                           {format(new Date(bonus.date), 'MMM dd, yyyy')}
                         </Typography>
@@ -610,14 +602,6 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
                           sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
                         />
                       </Box>
-                      {/* Date (inline on desktop) */}
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, ml: { xs: 0, sm: 1 }, display: { xs: 'none', sm: 'block' } }}
-                      >
-                        {format(new Date(bonus.date), 'MMM dd, yyyy')}
-                      </Typography>
                       {/* Delete Icon (right) */}
                       <Box display="flex" alignItems="center" justifyContent="flex-end">
                         <IconButton
