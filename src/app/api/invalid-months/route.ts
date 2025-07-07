@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 
+function isPrismaError(error: unknown): error is { code: string } {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    typeof (error as { code: unknown }).code === 'string'
+  );
+}
+
 // GET: List invalid months for a helper
 export async function GET(request: NextRequest) {
   try {
@@ -37,12 +46,12 @@ export async function POST(request: NextRequest) {
     })
     return NextResponse.json(invalidMonth, { status: 201 })
   } catch (error) {
-    if (error.code === 'P2002') {
+    if (isPrismaError(error) && error.code === 'P2002') {
       // Unique constraint failed
-      return NextResponse.json({ error: 'Month already marked as invalid' }, { status: 409 })
+      return NextResponse.json({ error: 'Month already marked as invalid' }, { status: 409 });
     }
     console.error('Error marking month as invalid:', error)
-    return NextResponse.json({ error: 'Failed to mark month as invalid' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to mark as invalid' }, { status: 500 });
   }
 }
 
