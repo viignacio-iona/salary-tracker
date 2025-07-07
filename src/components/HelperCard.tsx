@@ -461,29 +461,28 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
                           {format(new Date(deduction.date), 'MMM dd, yyyy')}
                         </Typography>
                       </Box>
-                      {/* Purpose (center) */}
-                      <Box flex={1} display="flex" alignItems="center" justifyContent="flex-start">
+                      {/* Reason chip and Delete Icon in same row, vertically centered */}
+                      <Box flex={1} display="flex" alignItems="center" justifyContent="flex-start" gap={1}>
                         <Chip
                           label={deduction.purpose}
                           size="small"
                           sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
                         />
-                      </Box>
-                      {/* Delete Icon (right) */}
-                      <Box display="flex" alignItems="center" justifyContent="flex-end">
-                        <IconButton
-                          edge="end"
-                          aria-label="delete deduction"
-                          color="error"
-                          onClick={async () => {
-                            if (window.confirm('Delete this deduction?')) {
-                              await fetch(`/api/deductions?id=${deduction.id}`, { method: 'DELETE' })
-                              onUpdate()
-                            }
-                          }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
+                        <Box ml="auto" display="flex" alignItems="center">
+                          <IconButton
+                            edge="end"
+                            aria-label="delete deduction"
+                            color="error"
+                            onClick={async () => {
+                              if (window.confirm('Delete this deduction?')) {
+                                await fetch(`/api/deductions?id=${deduction.id}`, { method: 'DELETE' })
+                                onUpdate()
+                              }
+                            }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Box>
                       </Box>
                     </Box>
                   </ListItem>
@@ -593,30 +592,29 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
                           {format(new Date(bonus.date), 'MMM dd, yyyy')}
                         </Typography>
                       </Box>
-                      {/* Purpose (center) */}
-                      <Box flex={1} display="flex" alignItems="center" justifyContent="flex-start">
+                      {/* Reason chip and Delete Icon in same row, vertically centered */}
+                      <Box flex={1} display="flex" alignItems="center" justifyContent="flex-start" gap={1}>
                         <Chip
                           label={bonus.purpose}
                           size="small"
                           color="success"
                           sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
                         />
-                      </Box>
-                      {/* Delete Icon (right) */}
-                      <Box display="flex" alignItems="center" justifyContent="flex-end">
-                        <IconButton
-                          edge="end"
-                          aria-label="delete bonus"
-                          color="error"
-                          onClick={async () => {
-                            if (window.confirm('Delete this bonus?')) {
-                              await fetch(`/api/bonuses?id=${bonus.id}`, { method: 'DELETE' })
-                              onUpdate()
-                            }
-                          }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
+                        <Box ml="auto" display="flex" alignItems="center">
+                          <IconButton
+                            edge="end"
+                            aria-label="delete bonus"
+                            color="error"
+                            onClick={async () => {
+                              if (window.confirm('Delete this bonus?')) {
+                                await fetch(`/api/bonuses?id=${bonus.id}`, { method: 'DELETE' })
+                                onUpdate()
+                              }
+                            }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Box>
                       </Box>
                     </Box>
                   </ListItem>
