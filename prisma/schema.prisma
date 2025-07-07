@@ -71,6 +71,7 @@ model Bonus {
   helperId    String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  given       Boolean  @default(false)
 
   // Relations
   helper Helper @relation(fields: [helperId], references: [id], onDelete: Cascade)

@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { helperId, purpose, amount, date, month, year } = await request.json()
+    const { helperId, purpose, amount, date, month, year, given } = await request.json()
     
     if (!helperId || !purpose || !amount || !date || !month || !year) {
       return NextResponse.json(
@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
         date: new Date(date),
         month,
         year: parseInt(year),
+        given: typeof given === 'boolean' ? given : false,
       },
       include: { helper: true },
     })
@@ -66,6 +67,23 @@ export async function POST(request: NextRequest) {
       { error: 'Failed to create bonus' },
       { status: 500 }
     )
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const { id, given } = await request.json()
+    if (!id || typeof given !== 'boolean') {
+      return NextResponse.json({ error: 'Bonus ID and given status are required' }, { status: 400 })
+    }
+    const updated = await prisma.bonus.update({
+      where: { id },
+      data: { given },
+    })
+    return NextResponse.json(updated)
+  } catch (error) {
+    console.error('Error updating bonus given status:', error)
+    return NextResponse.json({ error: 'Failed to update bonus' }, { status: 500 })
   }
 }
 

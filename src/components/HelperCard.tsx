@@ -47,6 +47,7 @@ interface Helper {
     date: string
     month: string
     year: number
+    given?: boolean
   }>
 }
 
@@ -118,6 +119,24 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
   // Check if "Fully paid" deduction exists for this month
   const isFullyPaid = monthDeductions.some(d => d.purpose === 'Fully paid')
 
+  // Calculate To Pay: salary + sum of bonuses not given - deductions
+  const totalBonusesToPay = monthBonuses.filter(b => !b.given).reduce((sum, b) => sum + b.amount, 0)
+  const toPay = salary + totalBonusesToPay - totalDeductions
+
+  // Toggle bonus 'given' status
+  const handleToggleBonusGiven = async (bonusId: string, given: boolean) => {
+    try {
+      await fetch('/api/bonuses', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: bonusId, given }),
+      })
+      onUpdate()
+    } catch (error) {
+      console.error('Error updating bonus given status:', error)
+    }
+  }
+
   const handleSalaryUpdate = async (newSalary: number) => {
     try {
       const response = await fetch('/api/salaries', {
@@ -165,7 +184,7 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
     }
   }
 
-  const handleAddBonus = async (purpose: string, amount: number, date: string) => {
+  const handleAddBonus = async (purpose: string, amount: number, date: string, given: boolean) => {
     try {
       const response = await fetch('/api/bonuses', {
         method: 'POST',
@@ -177,6 +196,7 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
           date,
           month,
           year: parseInt(year),
+          given,
         }),
       })
 
@@ -512,7 +532,10 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
           )}
         </Box>
 
-        {/* Bonuses Section */}
+        {/* Divider between Deductions and Additions */}
+        <Divider sx={{ my: 2 }} />
+
+        {/* Additions Section */}
         <Box mb={3}>
           <Box 
             display="flex" 
@@ -527,7 +550,7 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
               fontWeight={500}
               sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
             >
-              Bonuses
+              Additions
             </Typography>
             <Box sx={{ ml: 'auto', display: 'flex', justifyContent: { xs: 'flex-end', sm: 'flex-end' } }}>
               <Button
@@ -552,13 +575,13 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
               fontSize={14}
               sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
             >
-              No bonuses for this month
+              No additions for this month
             </Typography>
           ) : (
             <List dense disablePadding>
               {monthBonuses.map((bonus, idx) => (
                 <React.Fragment key={bonus.id}>
-                  <ListItem sx={{ pl: 0, pr: 0 }} disableGutters>
+                  <ListItem sx={{ pl: 0, pr: 0, bgcolor: bonus.given ? 'grey.50' : 'inherit' }} disableGutters>
                     <Box
                       display="flex"
                       flexDirection="row"
@@ -572,7 +595,7 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
                         flexDirection="column"
                         alignItems="flex-start"
                         minWidth={90}
-                        sx={{ mr: { sm: 1 } }}
+                        sx={{ mr: { sm: 1 }, opacity: bonus.given ? 0.5 : 1 }}
                       >
                         <Box display="flex" alignItems="center" gap={1}>
                           <AddCircleOutlineIcon fontSize="small" color="success" />
@@ -592,21 +615,31 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
                           {format(new Date(bonus.date), 'MMM dd, yyyy')}
                         </Typography>
                       </Box>
-                      {/* Reason chip and Delete Icon in same row, vertically centered */}
+                      {/* Reason chip and action buttons */}
                       <Box flex={1} display="flex" alignItems="center" justifyContent="flex-start" gap={1}>
                         <Chip
                           label={bonus.purpose}
                           size="small"
                           color="success"
-                          sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+                          sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, opacity: bonus.given ? 0.5 : 1 }}
                         />
-                        <Box ml="auto" display="flex" alignItems="center">
+                        <Box ml="auto" display="flex" alignItems="center" gap={0.5}>
+                          {/* Given toggle */}
+                          <Button
+                            size="small"
+                            variant={bonus.given ? 'contained' : 'outlined'}
+                            color={bonus.given ? 'primary' : 'inherit'}
+                            onClick={() => handleToggleBonusGiven(bonus.id, !bonus.given)}
+                            sx={{ minWidth: 0, px: 1, fontSize: 12 }}
+                          >
+                            {bonus.given ? 'Given' : 'Not Given'}
+                          </Button>
                           <IconButton
                             edge="end"
                             aria-label="delete bonus"
                             color="error"
                             onClick={async () => {
-                              if (window.confirm('Delete this bonus?')) {
+                              if (window.confirm('Delete this addition?')) {
                                 await fetch(`/api/bonuses?id=${bonus.id}`, { method: 'DELETE' })
                                 onUpdate()
                               }
@@ -630,7 +663,7 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
                   fontWeight={600}
                   sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
                 >
-                  Total Bonuses:
+                  Total Additions:
                 </Typography>
                 <Typography 
                   color="success.main" 
@@ -734,6 +767,17 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
             </DialogActions>
           </form>
         </Dialog>
+        {/* To Pay Section */}
+        <Box mb={2}>
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            <Typography fontWeight={700} sx={{ fontSize: { xs: '1rem', sm: '1.1rem' } }}>
+              To Pay:
+            </Typography>
+            <Typography fontWeight={700} color={toPay >= 0 ? 'success.main' : 'error.main'} sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
+              ₱{toPay.toFixed(2)}
+            </Typography>
+          </Box>
+        </Box>
       </CardContent>
       <AddDeductionModal
         isOpen={showAddDeduction}
