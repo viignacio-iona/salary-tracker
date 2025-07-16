@@ -215,7 +215,7 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
   }
 
   const handleMarkPaid = async () => {
-    if (netPay <= 0 || isFullyPaid) return
+    if (toPay <= 0 || isFullyPaid) return
     setIsPaying(true)
     try {
       const response = await fetch('/api/deductions', {
@@ -224,7 +224,7 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
         body: JSON.stringify({
           helperId: helper.id,
           purpose: 'Fully paid',
-          amount: netPay,
+          amount: toPay,
           date: format(new Date(), 'yyyy-MM-dd'),
           month,
           year: parseInt(year),
@@ -701,7 +701,7 @@ export default function HelperCard({ helper, selectedMonth, onUpdate }: HelperCa
           variant={isFullyPaid ? 'contained' : 'outlined'}
           color={isFullyPaid ? 'success' : 'primary'}
           onClick={handleMarkPaid}
-          disabled={netPay <= 0 || isFullyPaid || isPaying}
+          disabled={toPay <= 0 || isFullyPaid || isPaying}
           sx={{ 
             fontWeight: 700, 
             py: { xs: 1.5, sm: 1.2 }, 
